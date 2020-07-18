@@ -1,4 +1,3 @@
-import logging
 from celery import Celery
 from rectangle import RectangleOperations
 
@@ -24,7 +23,6 @@ if __name__ == '__main__':
         operations.insert_test_data()
 
     while True:
-        print('*' * 100)
         print('List of Rectangles: ')
         operations.show_rectangle_data()
 
@@ -35,3 +33,7 @@ if __name__ == '__main__':
 
         print('Updated Rectangle: ')
         operations.show_rectangle_data(data)
+
+        exit = input('Do you want to quit (yes/no)? ')
+        if exit == 'yes':
+            break
