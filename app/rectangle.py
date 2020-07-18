@@ -109,5 +109,6 @@ class RectangleOperations:
         data_frame = pd.DataFrame(
             data,
             columns=['rectangle_id', 'a', 'b', 'area', 'perimeter'],
+            dtype=object
         )
         print(data_frame.to_string(index=False))
