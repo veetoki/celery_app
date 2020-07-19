@@ -1,5 +1,6 @@
 from celery import Celery
 from rectangle import RectangleOperations
+from sqlalchemy.orm.exc import NoResultFound
 
 
 app = Celery(
@@ -22,18 +23,38 @@ if __name__ == '__main__':
         operations.create_database_scheme()
         operations.insert_test_data()
 
+    show_rectangle = True
     while True:
-        print('List of Rectangles: ')
-        operations.show_rectangle_data()
+        if show_rectangle:
+            print('*' * 100)
+            print('List of Rectangles: ')
+            operations.show_rectangle_data()
 
-        rect_id = int(input('Enter the rectangle id: '))
+        rect_id = input('Enter the rectangle id: ')
+
+        if not rect_id.isdigit():
+            print('Wrong format! Please enter a integer.')
+            show_rectangle = False
+            continue
+
         result = update_rectangle.delay(rect_id)
 
-        data = result.get()
+        try:
+            data = result.get()
+        except NoResultFound:
+            print(
+                'Rectangle (rectangle_id {}) is not existed!'.format(rect_id)
+            )
+            break
 
         print('Updated Rectangle: ')
         operations.show_rectangle_data(data)
 
-        exit = input('Do you want to quit (yes/no)? ')
-        if exit == 'yes':
+        is_exit = input('Do you want to quit (y/n)? ')
+        if is_exit == 'y' or is_exit == 'n':
+            if is_exit == 'y':
+                break
+        else:
+            print('Wrong Answer!')
             break
+        print('*' * 100)

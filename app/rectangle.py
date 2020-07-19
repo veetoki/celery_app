@@ -19,7 +19,9 @@ class Rectangle(Base):
 
 
 class RectangleOperations:
-    engine = create_engine('sqlite:///rectangledb.db')
+
+    def __init__(self):
+        self.engine = create_engine('sqlite:///rectangledb.db')
 
     def calc_area(self, a, b):
         return a * b
@@ -43,6 +45,7 @@ class RectangleOperations:
 
     def insert_test_data(self):
         session = self.get_session()
+
         vals = []
         for i in range(20):
             a = random.randint(1, 100)
@@ -54,6 +57,7 @@ class RectangleOperations:
             vals.append(rect)
 
         session.add_all(vals)
+
         session.commit()
         session.close()
 
@@ -91,7 +95,7 @@ class RectangleOperations:
 
         return data
 
-    def show_rectangle_data(self, data=[]):
+    def show_rectangle_data(self, data=False):
         if not data:
             session = self.get_session()
             rectangles = session.query(Rectangle).all()
