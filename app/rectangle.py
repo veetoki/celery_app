@@ -30,8 +30,14 @@ class RectangleOperations:
         return (a + b) * 2
 
     def is_empty(self):
+        """
+        Check if there is a existing table.
+        :return:
+        Boolean: rectangle table existing or not.
+        """
         if not self.engine.dialect.has_table(self.engine, 'Rectangle'):
             self.create_database_scheme()
+
         session = self.get_session()
         res = False if session.query(Rectangle).first() else True
         session.close()
@@ -44,6 +50,10 @@ class RectangleOperations:
         Base.metadata.create_all(self.engine)
 
     def insert_test_data(self):
+        """
+        Create rectangle data for testing
+        :return:
+        """
         session = self.get_session()
 
         vals = []
@@ -62,6 +72,13 @@ class RectangleOperations:
         session.close()
 
     def update_rectangle(self, rectangle_id):
+        """
+        Calculate perimeter and area of the rectangle by rectangle_id.
+        :param
+        rectangle_id (int):
+        :return:
+        2D-Lists: row of updated rectangle
+        """
         session = self.get_session()
 
         rectangle = session.query(Rectangle).filter(
@@ -80,7 +97,7 @@ class RectangleOperations:
             'area': area,
             'perimeter': perimeter
         }
-        rectangle.update(vals)
+        rectangle.update(vals, synchronize_session='fetch')
 
         data = [[
             rectangle_data.rectangle_id,
@@ -96,6 +113,11 @@ class RectangleOperations:
         return data
 
     def show_rectangle_data(self, data=False):
+        """
+        Show all rectangle table or a row of rectangle
+        :param
+        data (2D-Lists): row of rectangle data
+        """
         if not data:
             session = self.get_session()
             rectangles = session.query(Rectangle).all()
@@ -105,7 +127,9 @@ class RectangleOperations:
                  rectangle.a,
                  rectangle.b,
                  rectangle.area,
-                 rectangle.perimeter] for rectangle in rectangles]
+                 rectangle.perimeter]
+                for rectangle in rectangles
+            ]
 
             session.commit()
             session.close()
